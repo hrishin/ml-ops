@@ -1,7 +1,8 @@
-venv/
-__pycache__/
-.pytest_cache/
-artifacts/
-data/
+venv
+__pycache__
+.pytest_cache
+artifacts
+data
 .DS_Store
+.pytest_cache
 
