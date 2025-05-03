@@ -46,7 +46,7 @@ jobs:
 
     - name: Build model
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-      run: make train
+      run: make setup && make train
 
     - name: Run BDD tests
       run: |
