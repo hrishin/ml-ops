@@ -43,7 +43,11 @@ jobs:
     - name: Install dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: poetry install --no-interaction
-        
+
+    - name: Build model
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      run: make train
+
     - name: Run BDD tests
       run: |
         poetry run pytest tests/features/ -v
