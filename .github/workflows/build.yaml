@@ -45,7 +45,6 @@ jobs:
       run: poetry install --no-interaction
 
     - name: Build model
-      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: make setup && make train
 
     - name: Run BDD tests
