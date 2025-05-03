@@ -1,5 +1,7 @@
 name: Tag code
 
+permissions:
+  contents: write 
 on:
   # Manually trigger the workflow
   workflow_dispatch:
