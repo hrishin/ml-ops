@@ -1,0 +1,121 @@
+name: Tag Code
+
+on:
+  # Manually trigger the workflow
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: 'Version increment type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - custom
+        default: 'patch'
+      custom_version:
+        description: 'Custom version number (only if increment=custom, e.g., v1.0.0)'
+        required: false
+        type: string
+      message:
+        description: 'Tag message'
+        required: false
+        default: 'Release version'
+        type: string
+
+jobs:
+  tag-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      # Optional: Validate version format for custom versions
+      - name: Validate version format
+        run: |
+          if [ "${{ github.event.inputs.increment }}" == "custom" ]; then
+            if ! [[ ${{ github.event.inputs.custom_version }} =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Error: Version must follow semantic versioning format (vX.Y.Z)"
+              exit 1
+            fi
+          fi
+        # Only run this step for manual triggers with custom version
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.increment == 'custom'
+      
+      # Get latest tag and increment version
+      - name: Get latest tag and increment version
+        id: get_version
+        run: |
+          # Get the latest tag or set default if none exists
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Latest tag: $LATEST_TAG"
+          
+          # Parse the semantic version components
+          MAJOR=$(echo $LATEST_TAG | cut -d. -f1 | sed 's/v//')
+          MINOR=$(echo $LATEST_TAG | cut -d. -f2)
+          PATCH=$(echo $LATEST_TAG | cut -d. -f3)
+          
+          # Determine which component to increment
+          INCREMENT="${{ github.event.inputs.increment }}"
+          
+          if [ "$INCREMENT" == "custom" ] && [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            # Use custom version provided by user
+            VERSION="${{ github.event.inputs.custom_version }}"
+            if [ -z "$VERSION" ]; then
+              echo "Error: Custom version is required when increment type is 'custom'"
+              exit 1
+            fi
+          else
+            # Auto-increment based on the selected type
+            if [ "$INCREMENT" == "major" ]; then
+              MAJOR=$((MAJOR+1))
+              MINOR=0
+              PATCH=0
+            elif [ "$INCREMENT" == "minor" ]; then
+              MINOR=$((MINOR+1))
+              PATCH=0
+            else
+              # Default to patch increment
+              PATCH=$((PATCH+1))
+            fi
+            VERSION="v$MAJOR.$MINOR.$PATCH"
+          fi
+          
+          # Set message
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            MESSAGE="${{ github.event.inputs.message }}"
+          else
+            MESSAGE="Automated release $VERSION"
+          fi
+          
+          # Set outputs for use in later steps
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "MESSAGE=$MESSAGE" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "message=$MESSAGE" >> $GITHUB_OUTPUT
+          
+          echo "Version to be created: $VERSION"
+          echo "Message: $MESSAGE"
+
+      # Create and push tag
+      - name: Create and push tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "${{ env.VERSION }}" -m "${{ env.MESSAGE }}"
+          git push origin "${{ env.VERSION }}"
+      
+      # Optional: Create a GitHub release
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: Release ${{ env.VERSION }}
+          body: ${{ env.MESSAGE }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
