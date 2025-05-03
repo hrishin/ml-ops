@@ -4,7 +4,7 @@
 # Variables
 IMAGE_NAME = iris-classifier-api
 IMAGE_TAG ?= latest
-DOCKER_REGISTRY ?= ghcr.io/$(shell git config --get remote.origin.url | sed 's/.*github.com[\/:]\(.*\)\/\(.*\)\.git/\1/')
+DOCKER_REGISTRY ?= docker.io
 KUBERNETES_NAMESPACE ?= ml-models
 
 # Help
@@ -18,6 +18,7 @@ help:
 	@echo "  test-bdd    - Run BDD tests"
 	@echo "  lint        - Run code linting"
 	@echo "  format      - Format code"
+	@echo "  build   	 - Build container image"
 	@echo "  clean       - Clean build artifacts"
 
 # Setup
@@ -56,6 +57,11 @@ format:
 	@echo "Formatting code..."
 	@poetry run black app model tests
 	@poetry run isort app model tests
+
+# Container
+build: train
+	@echo "Building container image"
+	@docker build -t $(DOCKER_REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG) .
 
 # Clean
 clean:
