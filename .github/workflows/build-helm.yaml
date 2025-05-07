@@ -47,6 +47,7 @@ jobs:
             git pull origin gh-pages
           else
             git checkout --orphan gh-pages
+            git merge origin/main
           fi
 
       - name: Package Helm chart
