@@ -2,6 +2,7 @@ name: Tag code
 
 permissions:
   contents: write 
+
 on:
   # Manually trigger the workflow
   workflow_dispatch:
@@ -114,3 +115,13 @@ jobs:
           body: ${{ env.MESSAGE }}
           draft: false
           prerelease: false
+
+      - name: Trigger build workflow
+        uses: peter-evans/workflow-dispatch@v1
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          repository: hrishin/ml-ops
+          workflow: build.yml
+          ref: main
+          inputs: |
+            container_tag: ${{ env.VERSION }}
