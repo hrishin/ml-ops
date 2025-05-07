@@ -116,12 +116,18 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Trigger build workflow
-        uses: peter-evans/workflow-dispatch@v1
+      # Trigger the target workflow
+      - name: Trigger target workflow
+        uses: actions/github-script@v6
         with:
-          token: ${{ secrets.GH_TOKEN }}
-          repository: hrishin/ml-ops
-          workflow: build.yml
-          ref: main
-          inputs: |
-            container_tag: ${{ env.VERSION }}
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build.yml',
+              ref: 'main',
+              inputs: {
+                container_tag: '${{ env.VERSION }}'
+              }
+            })
