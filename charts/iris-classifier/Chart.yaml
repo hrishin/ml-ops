@@ -3,4 +3,4 @@ name: iris-classifier
 description: A Helm chart for Iris Classifier ML Service
 type: application
 version: v1.0.0
-appVersion: "v1.4.0"
+appVersion: "v1.0.0"
