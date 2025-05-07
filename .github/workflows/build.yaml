@@ -80,7 +80,11 @@ jobs:
         registry: ${{ env.DOCKER_REGISTRY }}
         username: ${{ secrets.CONTAINER_USERNAME }}
         password: ${{ secrets.CONTAINER_PASSWORD }}
-        
+
+    - name: Train the model
+      run: |
+        make train
+
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v4
       with:
@@ -111,7 +115,11 @@ jobs:
         registry: ${{ env.DOCKER_REGISTRY }}
         username: ${{ secrets.CONTAINER_USERNAME }}
         password: ${{ secrets.CONTAINER_PASSWORD }}
-        
+
+    - name: Train the model
+      run: |
+        make train
+
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v4
       with:
