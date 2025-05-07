@@ -30,6 +30,12 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.args }}
+        args:
+        {{- range .Values.args }}
+        - "{{ . }}"
+        {{- end }}
+        {{- end }}
         ports:
         - containerPort: {{ .Values.route.port }}
         resources:
