@@ -12,7 +12,6 @@ from fastapi.responses import JSONResponse
 
 from app.models import PredictionRequest, PredictionResponse
 from app.utils import model_loader
-from model.config import ModelConfig
 
 # Set up logging
 logging.basicConfig(

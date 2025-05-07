@@ -12,8 +12,8 @@ class ModelConfig:
     """Configuration for model training and serving."""
     
     # Directories
-    ARTIFACTS_DIR = os.path.join(PROJECT_ROOT, "artifacts")
-    DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+    ARTIFACTS_DIR = "artifacts"
+    DATA_DIR = "data"
     
     # Files
     DATA_PATH = os.path.join(DATA_DIR, "iris.csv")

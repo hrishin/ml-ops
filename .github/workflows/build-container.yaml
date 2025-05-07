@@ -1,4 +1,4 @@
-name: Build model
+name: Build model and publish container image
 
 on:
   push:
@@ -93,9 +93,6 @@ jobs:
     - name: Install dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: poetry install --no-interaction
-
-    - name: Build model
-      run: make setup && make train
       
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -106,6 +103,9 @@ jobs:
         registry: ${{ env.DOCKER_REGISTRY }}
         username: ${{ secrets.CONTAINER_USERNAME }}
         password: ${{ secrets.CONTAINER_PASSWORD }}
+
+    - name: Build model
+      run: make setup && make train
 
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v4
@@ -151,9 +151,6 @@ jobs:
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: poetry install --no-interaction
 
-    - name: Build model
-      run: make setup && make train
-
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
     
@@ -164,9 +161,8 @@ jobs:
         username: ${{ secrets.CONTAINER_USERNAME }}
         password: ${{ secrets.CONTAINER_PASSWORD }}
 
-    - name: Train the model
-      run: |
-        make train
+    - name: Build model
+      run: make setup && make train
 
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v4
