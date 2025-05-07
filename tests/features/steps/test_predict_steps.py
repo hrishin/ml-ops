@@ -85,7 +85,7 @@ def send_prediction_request(request_data, test_client):
     """Send prediction request to API."""
     # Store response in request_data for use in then steps
     response = test_client.post(
-        "/predict", headers={"Content-Type": "application/json"}, json=request_data
+        "/api/v1/predict", headers={"Content-Type": "application/json"}, json=request_data
     )
     print(f"response {response.json()}")
 
@@ -102,7 +102,7 @@ def send_prediction_request(request_data, test_client):
 @when("I check the API health status")
 def check_health_status(request_data, test_client):
     """Check API health status."""
-    response = test_client.get("/health")
+    response = test_client.get("/api/v1/health")
     request_data["response"] = response
     request_data["status_code"] = response.status_code
 

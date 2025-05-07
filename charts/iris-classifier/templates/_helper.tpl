@@ -64,7 +64,7 @@ timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
 failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
 {{- else }}
 httpGet:
-  path: /health
+  path: /api/v1/health
   port: {{ .Values.route.port }}
 initialDelaySeconds: 30
 periodSeconds: 30
@@ -87,7 +87,7 @@ timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
 failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
 {{- else }}
 httpGet:
-  path: /health
+  path: /api/v1/health
   port: {{ .Values.route.port }}
 initialDelaySeconds: 30
 periodSeconds: 30
@@ -131,7 +131,7 @@ rules:
         {{- if .Values.route.paths }}
         {{- range .Values.route.paths }}
         - path: {{ . }}
-          pathType: {{- if $.Values.route.pathType }} {{ $.Values.route.pathType }} {{- else }} Prefix {{- end }}
+          pathType: {{- if $.Values.route.pathType }} {{ $.Values.route.pathType }} {{- else }} ImplementationSpecific {{- end }}
           backend:
             service:
               name: {{ include "iris-classifier.fullname" $ }}
@@ -140,7 +140,7 @@ rules:
         {{- end }}
         {{- else }}
         - path: /
-          pathType: Prefix
+          pathType: ImplementationSpecific
           backend:
             service:
               name: {{ include "iris-classifier.fullname" $ }}
@@ -161,7 +161,6 @@ Define the route extra configuration
 {{- else }}
 kubernetes.io/ingress.class: "nginx"
 nginx.ingress.kubernetes.io/ssl-redirect: "false"
-nginx.ingress.kubernetes.io/rewrite-target: /$2
 {{- end }}
 {{- end }}
 

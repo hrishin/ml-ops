@@ -22,8 +22,8 @@ args:
 
 # Ingress configuration
 route:
-  port: 8080
   host:  iris.kube.two.inc
+  port: 8080
   paths: 
   - /api/v1
 
