@@ -1,0 +1,36 @@
+# Deployment configuration
+replicaCount: 2
+
+image:
+  repository: docker.io/hriships/iris-classifier-api
+  tag: latest
+  pullPolicy: Always
+
+# Resource configuration
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+# Application configuration
+logLevel: INFO
+
+# Ingress configuration
+route:
+  port: 8080
+  host:  iris.kube.two.inc
+  paths: 
+  - /api/v1
+
+# Storage configuration
+# storage:
+#   size: 3Gi
+
+# Prometheus metrics configuration
+metrics:
+  enabled: true
+  path: /metrics
+  port: 8000

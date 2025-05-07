@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "iris-classifier.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "iris-classifier.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "iris-classifier.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        {{- include "iris-classifier.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- if .Values.metrics.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/path: {{ .Values.metrics.path | quote }}
+        prometheus.io/port: {{ .Values.metrics.port | quote }}
+        {{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.route.port }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        env:
+        - name: LOG_LEVEL
+          value: {{ .Values.logLevel | quote }}
+        {{- if .Values.storage }}
+        volumeMounts:
+        - name: model-artifacts
+          mountPath: /app/artifacts
+        {{- end }}
+        livenessProbe:
+          {{- include "iris-classifier.livenessProbe" . | nindent 10 }}
+        readinessProbe:
+          {{- include "iris-classifier.readinessProbe" . | nindent 10 }}
+      {{- if .Values.storage }}
+      volumes:
+      - name: model-artifacts
+        persistentVolumeClaim:
+          claimName: {{ include "iris-classifier.fullname" . }}-pvc
+      {{- end }}

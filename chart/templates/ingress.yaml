@@ -1,0 +1,11 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "iris-classifier.fullname" . }}-ingress
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "iris-classifier.labels" . | nindent 4 }}
+  annotations:
+    {{- include "iris-classifier.routeExtraConfig" . | trim | nindent 4 }}
+spec:
+  {{- include "iris-classifier.routeBasicConfig" . | trim |nindent 2 }}
