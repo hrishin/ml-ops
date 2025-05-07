@@ -3,7 +3,7 @@ replicaCount: 2
 
 image:
   repository: docker.io/hriships/iris-classifier-api
-  tag: v1.0.0
+  tag: v1.1.0
   pullPolicy: Always
 
 # Resource configuration
@@ -22,8 +22,8 @@ args:
 
 # Ingress configuration
 route:
-  port: 8080
   host:  iris.kube.two.inc
+  port: 8080
   paths: 
   - /api/v1
 

@@ -6,7 +6,7 @@ import logging
 import time
 
 import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi import Depends, FastAPI, HTTPException, Request, status, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -26,29 +26,11 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-# Request timing middleware
-@app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
-    """Add processing time to response headers."""
-    start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    response.headers["X-Process-Time"] = str(process_time)
-    return response
-
+# Define API router with /api/v1 prefix
+api_router = APIRouter(prefix="/api/v1")
 
 # Health check endpoint
-@app.get("/health", status_code=status.HTTP_200_OK)
+@api_router.get("/health", status_code=status.HTTP_200_OK)
 async def health_check():
     """Health check endpoint."""
     if model_loader.model is None:
@@ -61,16 +43,14 @@ async def health_check():
         "model_version": model_loader.model_info.get("version", "unknown"),
     }
 
-
 # Model info endpoint
-@app.get("/model/info", status_code=status.HTTP_200_OK)
+@api_router.get("/model/info", status_code=status.HTTP_200_OK)
 async def model_info():
     """Get information about the currently loaded model."""
     return model_loader.get_model_info()
 
-
 # Reload model endpoint
-@app.post("/model/reload", status_code=status.HTTP_200_OK)
+@api_router.post("/model/reload", status_code=status.HTTP_200_OK)
 async def reload_model():
     """Reload the model from disk."""
     success = model_loader.reload_model()
@@ -85,34 +65,23 @@ async def reload_model():
         "model_info": model_loader.get_model_info(),
     }
 
-
 # Prediction endpoint
-@app.post("/predict", response_model=PredictionResponse)
+@api_router.post("/predict", response_model=PredictionResponse)
 async def predict(request: PredictionRequest):
     """
     Make a prediction with the Iris classifier model.
-
-    Args:
-        request: Input features for prediction
-
-    Returns:
-        Prediction result with class and metadata
     """
     try:
         logger.info(f"Prediction request: {request}")
-        # import pdb; pdb.set_trace()
 
-        # Check if model is loaded
         if model_loader.model is None:
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                 detail="Model not loaded. Please train a model first.",
             )
 
-        # Make prediction
         prediction, label, probabilities = model_loader.predict(request.dict())
 
-        # Create response
         response = PredictionResponse(
             prediction=prediction,
             prediction_label=label,
@@ -130,21 +99,50 @@ async def predict(request: PredictionRequest):
             detail=f"Error making prediction: {str(e)}",
         )
 
-
-@app.get("/")
-async def root():
-    """API root endpoint."""
+# Root endpoint for versioned API
+@api_router.get("/")
+async def api_root():
     return {
-        "message": "Iris Classifier API",
+        "message": "Iris Classifier API - v1",
         "endpoints": {
             "/predict": "Make a prediction (POST)",
             "/health": "Health check (GET)",
             "/model/info": "Get model information (GET)",
             "/model/reload": "Reload model from disk (POST)",
-            "/docs": "API documentation",
         },
     }
 
+# Add router to app
+app.include_router(api_router)
 
+# Root endpoint without version
+@app.get("/")
+async def root():
+    return {
+        "message": "Welcome to the Iris Classifier API",
+        "docs": "/docs",
+        "versioned_entrypoint": "/api/v1/",
+    }
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Request timing middleware
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    """Add processing time to response headers."""
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
+
+# Run the app
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
