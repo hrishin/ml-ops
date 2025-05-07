@@ -1,4 +1,4 @@
-name: Publish Helm Chart to GitHub Pages
+name: Build and publish helm chart
 
 on:
   workflow_dispatch:
@@ -44,10 +44,10 @@ jobs:
           git fetch origin gh-pages || true
           if git ls-remote --exit-code --heads origin gh-pages; then
             git checkout gh-pages
-            git pull origin gh-pages
+            git pull origin main
           else
             git checkout --orphan gh-pages
-            git merge origin/main
+            git pull origin main
           fi
 
       - name: Package Helm chart
@@ -74,3 +74,15 @@ jobs:
           git add .
           git commit -m "Publish chart version ${{ steps.version.outputs.version }}" || echo "No changes"
           git push origin gh-pages
+
+      - name: Trigger target workflow
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy-gh-page.yaml',
+              ref: 'gh-pages'
+            })
