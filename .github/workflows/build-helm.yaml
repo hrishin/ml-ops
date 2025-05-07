@@ -41,7 +41,6 @@ jobs:
           mkdir -p packaged
           helm package charts/${{ steps.vars.outputs.chart_name }} \
             --version ${{ github.event.inputs.version }} \
-            --app-version ${{ steps.version.outputs.version }} \
             --destination packaged/
 
       - name: Checkout gh-pages branch
