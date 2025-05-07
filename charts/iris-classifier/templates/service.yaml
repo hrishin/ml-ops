@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "iris-classifier.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "iris-classifier.labels" . | nindent 4 }}
+spec:
+  {{- include "iris-classifier.serviceConfig" . | nindent 2 }}

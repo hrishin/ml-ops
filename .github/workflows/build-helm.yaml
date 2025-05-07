@@ -1,0 +1,69 @@
+name: Publish Helm Chart to GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate version format
+        run: |
+          if ! [[ ${{ github.event.inputs.version }} =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Version must follow semantic versioning format (vX.Y.Z)"
+            exit 1
+          fi
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+
+      - name: Set chart and repo vars
+        id: vars
+        run: |
+          echo "chart_name=$(basename charts/*)" >> $GITHUB_OUTPUT
+          echo "repo=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" >> $GITHUB_OUTPUT
+
+      - name: Package Helm chart
+        run: |
+          mkdir -p packaged
+          helm package charts/${{ steps.vars.outputs.chart_name }} \
+            --version ${{ github.event.inputs.version }} \
+            --app-version ${{ steps.version.outputs.version }} \
+            --destination packaged/
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Copy packaged chart to gh-pages
+        run: |
+          mkdir -p gh-pages
+          cp -v packaged/*.tgz gh-pages/
+
+      - name: Regenerate index.yaml
+        run: |
+          helm repo index gh-pages --url ${{ steps.vars.outputs.repo }}
+
+      - name: Commit and push to gh-pages
+        run: |
+          cd gh-pages
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Publish chart version ${{ steps.version.outputs.version }}" || echo "No changes"
+          git push origin gh-pages
