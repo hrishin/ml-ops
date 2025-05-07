@@ -2,8 +2,18 @@ apiVersion: v1
 entries:
   iris-classifier:
   - apiVersion: v2
+    appVersion: v1.1.0
+    created: "2025-05-07T16:49:59.006189337Z"
+    description: A Helm chart for Iris Classifier ML Service
+    digest: ee5ddcabcb873bb5ca086a3b22024c533e578c356a7d91f29d2cb73d8c51aa05
+    name: iris-classifier
+    type: application
+    urls:
+    - https://hrishin.github.io/ml-ops/iris-classifier-v1.1.0.tgz
+    version: v1.1.0
+  - apiVersion: v2
     appVersion: v1.0.0
-    created: "2025-05-07T14:40:29.629082757Z"
+    created: "2025-05-07T16:49:59.005895726Z"
     description: A Helm chart for Iris Classifier ML Service
     digest: e7ffefdd3548aa7278f3bf121703edebbe5396965b39c160f6ccbe0913d4175c
     name: iris-classifier
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://hrishin.github.io/ml-ops/iris-classifier-v1.0.0.tgz
     version: v1.0.0
-generated: "2025-05-07T14:40:29.628611109Z"
+generated: "2025-05-07T16:49:59.005490845Z"
