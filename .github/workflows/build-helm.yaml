@@ -36,18 +36,28 @@ jobs:
           echo "chart_name=$(basename charts/*)" >> $GITHUB_OUTPUT
           echo "repo=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" >> $GITHUB_OUTPUT
 
+      - name: Ensure gh-pages branch exists
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git fetch origin gh-pages || true
+          if git ls-remote --exit-code --heads origin gh-pages; then
+            git checkout gh-pages
+            git pull origin gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf .
+            git commit --allow-empty -m "Initialize gh-pages"
+            git push origin gh-pages
+          fi
+
       - name: Package Helm chart
         run: |
           mkdir -p packaged
           helm package charts/${{ steps.vars.outputs.chart_name }} \
             --version ${{ github.event.inputs.version }} \
             --destination packaged/
-
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: gh-pages
 
       - name: Copy packaged chart to gh-pages
         run: |
