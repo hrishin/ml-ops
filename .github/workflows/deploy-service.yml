@@ -54,6 +54,7 @@ jobs:
     
       - name: Write summary
         run: |
-          echo "### 🚀 Pushed Docker image tag: ${VERSION}" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Pushed Docker image tag ${VERSION} to ${ENVIRONMENT} environment" >> $GITHUB_STEP_SUMMARY
         env:
           VERSION: ${{ github.event.inputs.version || 'latest' }}
+          ENVIRONMENT: ${{ github.event.inputs.env || 'latest' }}
