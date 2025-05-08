@@ -1,0 +1,57 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: iris-classifier
+  namespace: ml-ops
+spec:
+  releaseName: iris-classifier
+  interval: 1m
+  chart:
+    spec:
+      chart: iris-classifier
+      version: "v1.2.0"
+      sourceRef:
+        kind: HelmRepository
+        name: iris-classifier
+        namespace: ml-ops
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+    cleanupOnFail: true
+  values:
+    # Deployment configuration
+    replicaCount: 2
+
+    image:
+      tag: v1.3.0
+
+    # Resource configuration
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+
+    # Application configuration
+    args:
+    - 8080
+
+    # Ingress configuration
+    route:
+      host:  iris.kube.two.inc
+      port: 8080
+      paths: 
+      - /api/v1
+
+    # metrics scraping
+    metrics:
+      enabled: true
+      path: /api/v1/metrics
+      port: http
+      interval: 5s

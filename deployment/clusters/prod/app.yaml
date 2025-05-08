@@ -4,10 +4,14 @@ metadata:
   name: iris-classifier
   namespace: flux-system
 spec:
-  interval: 1m0s
+  interval: 1m50s
+  retryInterval: 1m
+  timeout: 5m
+  dependsOn:
+  - name: infra-controllers
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./deployment/overlays/prod
+  path: ./deployment/overlays/prod/apps
   prune: true
   wait: true

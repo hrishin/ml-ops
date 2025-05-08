@@ -30,12 +30,12 @@ setup:
 	@mkdir -p data
 
 # Train model
-train:
+train: setup
 	@echo "Training ML model..."
 	@poetry run python -m model.train
 
 # Run locally
-run:
+run: train
 	@echo "Running API locally..."
 	@poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
