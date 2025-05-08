@@ -15,8 +15,9 @@ jobs:
   deploy-to-dev:
     name: Deploy to Dev
     runs-on: ubuntu-latest
-    environment: development
     timeout-minutes: 0 # No timeout
+    environment:
+      name: development
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
