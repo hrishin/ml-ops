@@ -176,6 +176,6 @@ jobs:
     
     - name: Write summary
       run: |
-        echo "### 🚀 Pushed Docker image tag: ${ CONTAINER_TAG }" >> $GITHUB_STEP_SUMMARY
+        echo "### 🚀 Pushed Docker image tag: ${CONTAINER_TAG}" >> $GITHUB_STEP_SUMMARY
       env:
         CONTAINER_TAG: ${{ github.event.inputs.container_tag || 'latest' }}
