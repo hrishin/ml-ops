@@ -1,10 +1,11 @@
 
-.PHONY: help setup train run run-docker test test-unit test-bdd lint format clean build push deploy
+.PHONY: help setup train run run-docker test test-unit test-bdd lint format clean build build-run push deploy
 
 # Variables
 IMAGE_NAME = iris-classifier-api
 IMAGE_TAG ?= latest
 DOCKER_REGISTRY ?= docker.io
+DOCKER_REPO ?= hrishin
 KUBERNETES_NAMESPACE ?= ml-models
 
 # Help
@@ -35,7 +36,7 @@ train: setup
 	@poetry run python -m model.train
 
 # Run locally
-run: train
+run:
 	@echo "Running API locally..."
 	@poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
@@ -61,7 +62,14 @@ format:
 # Container
 build: train
 	@echo "Building container image"
-	@docker build -t $(DOCKER_REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG) .
+	@docker build -t $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(IMAGE_NAME):$(IMAGE_TAG) .
+
+build-run: build
+	@echo "Running container"
+	@docker kill iris-model 2>/dev/null || true
+	@docker rm -f iris-model 2>/dev/null || true
+	@docker run -d --name iris-model -p 9000:8000 $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(IMAGE_NAME):$(IMAGE_TAG)
+	@echo "Access the serving model http://0.0.0.0:9000/docs"
 
 # Clean
 clean:
