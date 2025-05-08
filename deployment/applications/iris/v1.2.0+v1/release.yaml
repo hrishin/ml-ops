@@ -27,7 +27,7 @@ spec:
     replicaCount: 2
 
     image:
-      tag: v1.2.0
+      tag: v1.3.0
 
     # Resource configuration
     resources:
