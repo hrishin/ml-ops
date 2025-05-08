@@ -48,15 +48,21 @@ jobs:
     needs: deploy-to-dev
     runs-on: ubuntu-latest
     timeout-minutes: 0 # No timeout
-    environment:
-      name: stage-approval
-      url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
-      - name: Approval notification
-        run: echo "Deployment to staging environment requires approval"
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          minimum-approvals: 1
+          issue-title: "Deploying ${{ github.event.inputs.version }} to stag from dev evnrionment"
+          issue-body: "Please approve or deny the deployment of version ${{ github.event.inputs.version }}"
+          exclude-workflow-initiator-as-approver: false
+          fail-on-denial: true
+          additional-approved-words: ''
+          additional-denied-words: ''
 
   deploy-to-stage:
     name: Deploy to Stage
+    needs: request-stage-approval
     runs-on: ubuntu-latest
     environment: stage
     timeout-minutes: 0 # No timeout
@@ -69,7 +75,7 @@ jobs:
 
       - name: Update tag in destination file
         run: |
-          SRC=deployment/overlays/dev/stage/values.yaml
+          SRC=deployment/overlays/stage/apps/values.yaml
           yq e '.spec.values.image.tag = "${{ github.event.inputs.version }}"' -i "$SRC"
 
       - name: Commit and push changes
@@ -87,19 +93,24 @@ jobs:
           VERSION: ${{ github.event.inputs.version || 'latest' }}
 
   request-prod-approval:
-    name: Request Production Deployment Approval
+    name: Request Prod Deployment Approval
     needs: deploy-to-stage
     runs-on: ubuntu-latest
     timeout-minutes: 0 # No timeout
-    environment:
-      name: prod-approval
-      url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
-      - name: Approval notification
-        run: echo "Deployment to production environment requires approval"
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          minimum-approvals: 1
+          issue-title: "Deploying ${{ github.event.inputs.version }} to prod from stage evnrionment"
+          issue-body: "Please approve or deny the deployment of version ${{ github.event.inputs.version }}"
+          exclude-workflow-initiator-as-approver: false
+          fail-on-denial: true
+          additional-approved-words: ''
+          additional-denied-words: ''
 
   deploy-to-prod:
-    name: Deploy to Stage
+    name: Deploy to Prod
     runs-on: ubuntu-latest
     environment: prod
     timeout-minutes: 0 # No timeout
@@ -112,7 +123,7 @@ jobs:
 
       - name: Update tag in destination file
         run: |
-          SRC=deployment/overlays/dev/prod/values.yaml
+          SRC=deployment/overlays/prod/apps/values.yaml
           yq e '.spec.values.image.tag = "${{ github.event.inputs.version }}"' -i "$SRC"
 
       - name: Commit and push changes
