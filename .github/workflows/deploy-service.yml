@@ -51,6 +51,9 @@ jobs:
           git add "$DEST"
           git commit -m "Promote version ${{ github.event.inputs.version }} to $DEST"
           git push
-
+    
       - name: Write summary
-        run: echo "### 🚀 Deployed iamge version: ${{ github.event.inputs.version  }} to ${{ github.event.inputs.promote }}" >> $GITHUB_STEP_SUMMARY
+        run: |
+          echo "### 🚀 Pushed Docker image tag: ${ VERSION }" >> $GITHUB_STEP_SUMMARY
+        env:
+          VERSION: ${{ github.event.inputs.version || 'latest' }}
