@@ -34,5 +34,7 @@ route:
 # Prometheus metrics configuration
 metrics:
   enabled: true
-  path: /metrics
-  port: 8000
+  path: /api/v1/metrics
+  port: http
+  interval: 15s
+
