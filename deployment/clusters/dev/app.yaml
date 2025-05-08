@@ -8,6 +8,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./overlays/dev
+  path: ./deployment/overlays/dev
   prune: true
   wait: true
