@@ -27,11 +27,11 @@ jobs:
         id: set-paths
         run: |
           if [[ "${{ github.event.inputs.promote }}" == "dev" ]]; then
-            echo "SRC=deployment/overlays/dev/values.yaml" >> $GITHUB_ENV
+            echo "SRC=deployment/overlays/dev/apps/values.yaml" >> $GITHUB_ENV
           elif [[ "${{ github.event.inputs.promote }}" == "stage" ]]; then
-            echo "SRC=deployment/overlays/stage/values.yaml" >> $GITHUB_ENV
+            echo "SRC=deployment/overlays/stage/apps/values.yaml" >> $GITHUB_ENV
           elif [[ "${{ github.event.inputs.promote }}" == "prod" ]]; then
-            echo "SRC=deployment/overlays/prod/values.yaml" >> $GITHUB_ENV
+            echo "SRC=deployment/overlays/prod/apps/values.yaml" >> $GITHUB_ENV
           else
             echo "Invalid promotion path"
             exit 1
