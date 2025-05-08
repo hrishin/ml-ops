@@ -30,12 +30,12 @@ setup:
 	@mkdir -p data
 
 # Train model
-train:
+train: setup
 	@echo "Training ML model..."
 	@poetry run python -m model.train
 
 # Run locally
-run:
+run: train
 	@echo "Running API locally..."
 	@poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
@@ -69,5 +69,6 @@ clean:
 	@rm -rf dist
 	@rm -rf build
 	@rm -rf *.egg-info
+	@rm -rf .pytest_cache
 	@find . -type d -name __pycache__ -exec rm -rf {} +
 	@find . -type f -name "*.pyc" -delete

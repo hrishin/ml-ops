@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: iris-classifier
+  namespace:  ml-ops
+spec:
+  interval: 1h
+  url: https://hrishin.github.io/ml-ops
