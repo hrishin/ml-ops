@@ -175,4 +175,4 @@ jobs:
         cache-to: type=gha,mode=max
 
     - name: Write summary
-      run: echo "### 🚀 Pushed Docker image tag: \`${{ github.event.inputs.container_tag  }}\`" >> $GITHUB_STEP_SUMMARY
+      run: echo "### 🚀 Pushed Docker image tag: ${{ github.event.inputs.container_tag  }}" >> $GITHUB_STEP_SUMMARY

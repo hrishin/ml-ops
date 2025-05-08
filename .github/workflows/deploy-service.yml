@@ -53,4 +53,4 @@ jobs:
           git push
 
       - name: Write summary
-        run: echo "### 🚀 Deployed iamge version: \`${{ github.event.inputs.version  }}\` to \`${{ github.event.inputs.promote }}\`" >> $GITHUB_STEP_SUMMARY
+        run: echo "### 🚀 Deployed iamge version: ${{ github.event.inputs.version  }} to ${{ github.event.inputs.promote }}" >> $GITHUB_STEP_SUMMARY
