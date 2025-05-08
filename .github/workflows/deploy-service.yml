@@ -111,6 +111,7 @@ jobs:
 
   deploy-to-prod:
     name: Deploy to Prod
+    needs: request-prod-approval
     runs-on: ubuntu-latest
     environment: prod
     timeout-minutes: 0 # No timeout
