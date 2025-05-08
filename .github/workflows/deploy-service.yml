@@ -52,5 +52,5 @@ jobs:
           git commit -m "Promote version ${{ github.event.inputs.version }} to $DEST"
           git push
 
-    - name: Write summary
-      run: echo "### 🚀 Deployed iamge version: \`${{ github.event.inputs.version  }}\` to \`${{ github.event.inputs.promote }}\`" >> $GITHUB_STEP_SUMMARY
+      - name: Write summary
+        run: echo "### 🚀 Deployed iamge version: \`${{ github.event.inputs.version  }}\` to \`${{ github.event.inputs.promote }}\`" >> $GITHUB_STEP_SUMMARY
