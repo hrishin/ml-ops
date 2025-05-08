@@ -6,7 +6,7 @@ import logging
 import time
 
 import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, Request, status, APIRouter
+from fastapi import Response, FastAPI, HTTPException, Request, status, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -155,7 +155,7 @@ async def api_root():
 
 @api_router.get('/metrics')
 async def metrics():
-    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 # Add router to app
 app.include_router(api_router)
