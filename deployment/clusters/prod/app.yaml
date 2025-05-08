@@ -4,10 +4,10 @@ metadata:
   name: iris-classifier
   namespace: flux-system
 spec:
-  interval: 5S
+  interval: 1m0s
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./deployment/overlays/dev
+  path: ./deployment/overlays/prod
   prune: true
   wait: true

@@ -1,0 +1,56 @@
+name: Deploy service
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'New image version to promote (e.g. v1.2.0)'
+        required: true
+      promote:
+        description: 'Promotion environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - stage
+          - prod
+
+jobs:
+  promote:
+    name: Promote HelmRelease version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set environment paths
+        id: set-paths
+        run: |
+          if [[ "${{ github.event.inputs.promote }}" == "dev" ]]; then
+            echo "SRC=deployment/overlays/dev/values.yaml" >> $GITHUB_ENV
+          elif [[ "${{ github.event.inputs.promote }}" == "stage" ]]; then
+            echo "SRC=deployment/overlays/stage/values.yaml" >> $GITHUB_ENV
+          elif [[ "${{ github.event.inputs.promote }}" == "prod" ]]; then
+            echo "SRC=deployment/overlays/prod/values.yaml" >> $GITHUB_ENV
+          else
+            echo "Invalid promotion path"
+            exit 1
+          fi
+
+      - name: Install yq
+        uses: mikefarah/yq@v4.35.1
+
+      - name: Update tag in destination file
+        run: |
+          yq e '.spec.values.image.tag = "${{ github.event.inputs.version }}"' -i "$SRC"
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add "$DEST"
+          git commit -m "Promote version ${{ github.event.inputs.version }} to $DEST"
+          git push
+
+    - name: Write summary
+      run: echo "### 🚀 Deployed iamge version: \`${{ github.event.inputs.version  }}\` to \`${{ github.event.inputs.promote }}\`" >> $GITHUB_STEP_SUMMARY
