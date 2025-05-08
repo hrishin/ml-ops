@@ -40,7 +40,7 @@ jobs:
         run: |
           echo "### 🚀 Pushed Docker image tag ${VERSION} to the dev environment" >> $GITHUB_STEP_SUMMARY
         env:
-          VERSION: ${{ github.event.inputs.version || 'latest' 
+          VERSION: ${{ github.event.inputs.version }} || 'latest' 
 
   wait-for-approval:
     needs: deploy-to-dev
