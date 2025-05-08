@@ -4,7 +4,7 @@ metadata:
   name: iris-classifier
   namespace: flux-system
 spec:
-  interval: 5S
+  interval: 0m5s
   sourceRef:
     kind: GitRepository
     name: flux-system
