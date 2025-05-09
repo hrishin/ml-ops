@@ -162,7 +162,7 @@ pass a custom tag using [SEMVER](https://semver.org/)
 schema.
 
 This automated workflow will tag the latest commit on the main branch, build, and publish the 
-serving container image to the `docker.io/hrishi/ml-ops` 
+serving container image to the `docker.io/hriships/ml-ops` 
 repository using the https://github.com/hrishin/ml-ops/actions/workflows/build-helm.yaml
 workflow.
 
@@ -192,7 +192,7 @@ by following the one-time setup described in the [GitOps setup](#gitops-setup) s
 Deployment flow is based on enventual consistent, run the following flux command to sync
 the changes upfront
 
-`Note: make sure kubectl is configured to use the corrent cluster from dev, statge and prod`
+`Note: make sure kubectl is configured to use the current cluster from dev, stage and prod`
 
 ```bash
 flux reconcile source git flux-system
@@ -241,12 +241,12 @@ Run the similar commands for the `staging` and `production` clusters by changing
 
 ## Deploy application using locally
 
-Thre may be a scenarios where user may want to deploy the application on manyally
+There may be a scenarios where user may want to deploy the application on manually
 on the kubernetes cluster.
 Either this cluster could run remote or locally.
 
-Application packageing is done through Helm Chart, which is one of the ways
-to deploy application on Kubernets.
+Application packaging is done through Helm Chart, which is one of the ways
+to deploy application on Kubernetes.
 
 To deploy application on local cluster(optional)
 ```bash
@@ -265,6 +265,3 @@ Once done testing, tear down the cluster which was setup locally in the previous
 ```bash
 kind delete cluster --name demo-cluster
 ```
-
-
-
