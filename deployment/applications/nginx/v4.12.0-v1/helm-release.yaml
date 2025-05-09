@@ -19,12 +19,17 @@ spec:
       retries: 3
   values:
     controller:
-      replicaCount: 2
+      replicaCount: 1
+      nodeSelector:
+        ingress-ready: "true"
+      tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
       service:
         type: NodePort
         nodePorts:
           http: 30080
           https: 30443
-        externalTrafficPolicy: Local
       admissionWebhooks:
         enabled: false
