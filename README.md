@@ -196,7 +196,11 @@ the changes upfront
 
 ```bash
 flux reconcile source git flux-system
-flux get all -n ml-ops #to follow the status
+flux get hr -n ml-ops #to follow the status
+
+#or
+
+flux reconcile hr iris-classifier -n ml-ops #to reconcile the state manually
 ```
 
 ## GitOps setup
@@ -235,6 +239,32 @@ flux bootstrap github \
 
 Run the similar commands for the `staging` and `production` clusters by changing the `--path` argument to `deployment/clusters/stage` and `deployment/clusters/prod`, respectively.
 
-TODO:
-- Add FluxCD commands to sync the application and follow status.
-- Add Helm install to test the setup locally using the kind cluster.
+## Deploy application using locally
+
+Thre may be a scenarios where user may want to deploy the application on manyally
+on the kubernetes cluster.
+Either this cluster could run remote or locally.
+
+Application packageing is done through Helm Chart, which is one of the ways
+to deploy application on Kubernets.
+
+To deploy application on local cluster(optional)
+```bash
+./scripts/kind.sh
+```
+
+
+In this case, a [helm chart](./chart/iris-classifier) for this application can be used to deploy the application by executing following commands.
+
+```bash
+make install 
+```
+
+Once done testing, tear down the cluster which was setup locally in the previous step
+
+```bash
+kind delete cluster --name demo-cluster
+```
+
+
+

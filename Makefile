@@ -1,5 +1,5 @@
 
-.PHONY: help setup train run run-docker test test-unit test-bdd lint format clean build build-run push deploy
+.PHONY: help setup train run run-docker test test-unit test-bdd lint format clean build build-run push deploy uninstall delete-namespace reset install
 
 # Variables
 IMAGE_NAME = iris-classifier-api
@@ -7,6 +7,8 @@ IMAGE_TAG ?= latest
 DOCKER_REGISTRY ?= docker.io
 DOCKER_REPO ?= hrishin
 KUBERNETES_NAMESPACE ?= ml-models
+RELEASE_NAME ?= iris-app
+NAMESPACE ?= iris-ns
 
 # Help
 help:
@@ -80,3 +82,18 @@ clean:
 	@rm -rf .pytest_cache
 	@find . -type d -name __pycache__ -exec rm -rf {} +
 	@find . -type f -name "*.pyc" -delete
+
+uninstall:
+	@echo "Uninstalling Helm release '$(RELEASE_NAME)' in namespace '$(NAMESPACE)'..."
+	helm uninstall $(RELEASE_NAME) --namespace $(NAMESPACE) || true
+
+delete-namespace:
+	@echo "Deleting namespace '$(NAMESPACE)'..."
+	kubectl delete namespace $(NAMESPACE) || true
+
+reset: uninstall delete-namespace
+	@echo "Reset complete."
+
+install: reset
+	@echo "Installing Helm chart..."
+	helm install $(RELEASE_NAME) ./charts/iris-classifier --namespace $(NAMESPACE) --create-namespace --wait
