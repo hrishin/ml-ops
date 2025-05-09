@@ -17,7 +17,7 @@ with a focus on MLOps practices.
 In order to run model training or deploy the serving application locally,
 please ensure the following setup is installed on the host:
 
-- Python 3.12 >=
+- Python - 3.12 >=
 - Docker or Podman
 - Make  
 - Kubectl cli
@@ -33,14 +33,14 @@ python -m venv venv && source venv/bin/activate
 make setup
 ```
 
-There are two main loops that developers or engineers would follow through the 
+There are two main loops that developers or engineers would be following through the 
 model SDLC (ML Ops):
 
-- Inner loop - Train and test the model locally, iterate over model testing
-- Outer loop - Once the model is ready to be deployed, developers would publish the new 
-  model and deploy it through dev, staging, and prod environments 
+- Development loop - Train and test the model locally, iterate over model testing
+- Deployment loop - Once the model is ready to be deployed, developers would publish the new 
+  model and deploy it through dev, staging, and prod environments
 
-## Inner Loop
+## Development Loop
 
 ### Run model training
 
@@ -104,11 +104,11 @@ or run a curl command to supply the sample input data:
 ```bash 
 curl -X POST http://0.0.0.0:8000/api/v1/predict \                                    
   -H "Content-Type: application/json"   -d '{ "sepal_length": 5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2 }' | jq .
-  
-  
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   327  100   214  100   113  60847  32129 --:--:-- --:--:-- --:--:--  106k
+```
+
+Response 
+
+```bash
 {
   "prediction": 0,
   "prediction_label": "setosa",
@@ -132,7 +132,7 @@ model from the previous steps:
 make test
 ```
 
-## Outer Loop
+## Deployment Loop
 
 ### Package and run container
 
@@ -155,34 +155,32 @@ publish an image with the PR build as a suffix to the container tag.
 ### Build and publish the model
 
 Once the model is ready to deploy, just create the git tag using 
-https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml
+[Tag code](https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml)
 GitHub Action workflow.
-
-This will allow the user to either bump major, minor, patch, or
+This workflow allow the user to either bump major, minor, patch, or
 pass a custom tag using [SEMVER](https://semver.org/) 
 schema.
 
-This automated workflow will tag the latest commit on the main branch, build, and publish the 
+This automated workflow will tag the latest commit on the `main` branch, build, and publish the 
 serving container image to the `docker.io/hriships/ml-ops` 
-repository using the https://github.com/hrishin/ml-ops/actions/workflows/build-helm.yaml
+repository using the [Build model and publish container image](https://github.com/hrishin/ml-ops/actions/workflows/build-container.yaml)
 workflow.
 
-The model version is maintained using the same tagging version.
+The model version is maintained using the same git tagging version.
 
 ### Deploy model serving service
 
 To deploy the container image that was
 built from the previous step,
-navigate to https://github.com/hrishin/ml-ops/actions/workflows/deploy-service.yml
+navigate to [Deploy serving service](https://github.com/hrishin/ml-ops/actions/workflows/deploy-service.yml) 
 workflow and pass the image tag.
 
 ![Deploy Service](docs/images/3-deploy-service.png)
 
 The image tag will be the same as the git 
-tag from the previous steps.
-
-One can check https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml
-to get the tag from the workflow summary.
+tag from the previous build steps that has been executed earlier.
+One can check [Tag code](https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml) or 
+[Build model and publish container image](https://github.com/hrishin/ml-ops/actions/workflows/build-container.yaml) to get the tag from the workflow summary.
 
 The deploy workflow deploys the model serving application using
 GitOps, allowing deployment promotion through dev, staging, and 
@@ -191,9 +189,10 @@ prod environments.
 This will deploy the application on the Kubernetes cluster. Make sure the respective 
 Kubernetes clusters are configured to use the GitOps workflow using FluxCD
 by following the one-time setup described in the [GitOps setup](#gitops-setup) section.
+One can setup the local `development` cluster by following [Local cluster setup](#local-cluster-setup) guide.
 
-Deployment flow is based on enventual consistent, run the following flux command to sync
-the changes upfront
+Run the following flux command to sync 
+the changes to cluster from the github repository
 
 `Note: make sure kubectl is configured to use the current cluster from dev, stage and prod`
 
@@ -204,6 +203,26 @@ flux get hr -n ml-ops #to follow the status
 #or
 
 flux reconcile hr iris-classifier -n ml-ops #to reconcile the state manually
+```
+
+Access the model endpoint by following 
+
+```bash
+ curl -X POST -H "Host: iris.kube.two.inc" -H "Content-Type: application/json" \
+  http://iris.kube.two.inc/api/v1/predict \
+  -d '{ "sepal_length": 5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2 }' | jq .
+
+{
+  "prediction": 0,
+  "prediction_label": "setosa",
+  "request_id": "bfff066d-7900-4793-838c-5593b0701ec4",
+  "model_version": "1.0.20250508_134800",
+  "probabilities": [
+    0.9790426981632894,
+    0.020957142708309565,
+    1.591284009687682E-7
+  ]
+}
 ```
 
 ## GitOps setup
@@ -217,7 +236,7 @@ to realize the deployment configuration and manage changes in the deployment
 state of the system.
 
 Use one of the commands to initialize the GitOps setup for the respective Kubernetes clusters.
-In this case, the following commands bootstrap Flux with this GitOps repository
+In this case, the following commands bootstrap FluxCD with this GitOps repository
 for the `development` environment.
 
 ```
@@ -254,12 +273,6 @@ Either this cluster could run remote or locally.
 Application packaging is done through Helm Chart, which is one of the ways
 to deploy application on Kubernetes.
 
-To deploy application on local cluster(optional)
-```bash
-./scripts/kind.sh
-```
-
-
 In this case, a [helm chart](./charts/iris-classifier) for this application can be used to deploy the application by executing following commands.
 
 ```bash
@@ -272,7 +285,6 @@ Once done testing, tear down the cluster which was setup locally in the previous
 kind delete cluster --name demo-cluster
 ```
 
-
 ## Publish the new helm chart version
 
 Application hosts the a [helm chart](./charts/iris-classifier) using the [github pages](https://hrishin.github.io/ml-ops/). Ops engineer
@@ -280,15 +292,43 @@ or developer can build build and publish the new version of chart using
 https://github.com/hrishin/ml-ops/actions/workflows/build-helm.yaml workflow
 
 
-
 ## Operations
 
-System deploys built-in grafana dashboard visualize the timeseries metrics which could help both SRE and developers to troubleshoot root cause of certain behavior. Users could access grafana dashboards via following commands
+System deploys built-in grafana dashboard visualize the timeseries metrics 
+which could help both SRE and developers to troubleshoot root cause of certain behavior. 
+Users could access ready to use `Iris Model Serving` dashboard
+
+http://grafana.kube.two.inc/dashboards
+
+# Local cluster setup
+
+To deploy application on local Kubernetes cluster(optional), execute 
+the following script
 
 ```bash
-kubectl -n monitoring port-forward services/prometheus-grafana 9091:80
-# Access the Grafana using http://localhost:9091/ with initial username and password is `admin` && `admin` respectively
+./scripts/kind.sh
 ```
+
+In order to access applications deployed though the kind 
+cluster, add following entires in the host file
+
+```sh
+127.0.0.1       iris.kube.two.inc
+127.0.0.1	      prometheus.kube.two.inc
+127.0.0.1       grafana.kube.two.inc
+```
+
+* Linux/Mac: edit `/etc/hosts`
+* Windows: edit `C:\Windows\System32\drivers\etc\hosts`
+
+```
+Note: editing host files needs Super user or administrator access.
+Also make sure browser setting accessing accessing insecure application 
+using HTTP
+```
+
+
+
 
 ## References
 

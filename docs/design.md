@@ -27,7 +27,7 @@ This allows use git to version control the releases, make release notes and buil
 As of now model is trained through the the github action workflow pipeline, however same pipeline could be enhanced to build and deploy model
 to extenal model repository.
 
-## Deployment through helm and gitops
+## Deployment through helm and GitOPs
 
 A helm chart is used to package the application manifests and to expose the certain configuration for the user configure the application.
 This chart for this application is designed in very opinionated way so 
@@ -43,18 +43,18 @@ Current implementation use the FluxCD to deploy both iris classifier model
 service and some dependent infra. such as nginx-ingress, prometheus,
 grafana.
 FluxCD allows modeling gitiops workflow and gives effect pattern quite conveniently using helm and kustomization configurations in order to deploy both infra. components and services. FluxCD is 
-easy to operate and govern comparatively other gitops tools like ArgoCD.
+easy to operate and govern comparatively other GitOPs tools like ArgoCD.
 
 For this service, following is the layout used to deployment
 ```bash
 .
-├── applications # holds all application manifests for both infra and application
+├── applications        # holds all application manifests for both infra and application
 │   ├── iris
 │   │   ├── v1.0.0+v1
 │   │   │   ├── kustomization.yaml
 │   │   │   ├── release.yaml
 │   │   │   └── repo.yaml
-│   │   └── v1.2.0+v1 # holds the common configuration for the application 
+│   │   └── v1.2.0+v1       # holds the common configuration for the application 
 │   │       ├── kustomization.yaml
 │   │       ├── release.yaml
 │   │       └── repo.yaml
@@ -78,9 +78,9 @@ For this service, following is the layout used to deployment
 │           ├── helm-release.yaml
 │           ├── kustomization.yaml
 │           └── repo.yaml
-├── clusters #this holds cluster specific deployment(entry point)
+├── clusters        #this holds cluster specific deployment(entry point)
 │   ├── dev
-│   │   ├── app.yaml #app has dependency on infra, infra has to be in place beforehand
+│   │   ├── app.yaml        #app has dependency on infra, infra has to be in place beforehand
 │   │   ├── infra.yaml
 │   │   └── kustomization.yaml
 │   ├── prod
@@ -91,7 +91,7 @@ For this service, following is the layout used to deployment
 │       ├── app.yaml
 │       ├── infra.yaml
 │       └── kustomization.yaml
-└── overlays #Use kustomization to configure environment specific options for each application
+└── overlays        #use kustomization to configure environment specific options for each application
     ├── dev
     │   ├── apps
     │   │   ├── kustomization.yaml
@@ -150,7 +150,7 @@ As of now application, helm chart, deployment configurations all lives in one re
 For deploying clusters, infra components, charts definitions could still be
 hosted into the monorepo.
 Mono repository usually reduced the overhead over managing multiple repository. It also facilitate building common operations conveniently.
-On the trade it raise some challenges with administration and logistics such as networking payload during the cloning, or encountering merge conflicts during the common gitops operations etc.
+On the trade it raise some challenges with administration and logistics such as networking payload during the cloning, or encountering merge conflicts during the common GitOPs operations etc.
 
 However application specific deployment and build workflows could live into its own git repository.
 

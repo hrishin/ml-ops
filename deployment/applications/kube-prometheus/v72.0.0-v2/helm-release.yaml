@@ -18,12 +18,24 @@ spec:
     prometheus:
       prometheusSpec:
         serviceMonitorSelectorNilUsesHelmValues: false
+      ingress:
+        enabled: true
+        hosts:
+        - prometheus.kube.two.inc
+        path: /
     grafana:
       enabled: true
       adminUser: admin
       adminPassword: admin #ideally needs come from secret
       service:
         type: ClusterIP
+      
+      ingress:
+        enabled: true
+        hosts:
+        - grafana.kube.two.inc
+        path: /
+
       sidecar:
         dashboards:
           enabled: true
