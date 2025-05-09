@@ -40,24 +40,11 @@ jobs:
         run: |
           echo "### 🚀 Pushed Docker image tag ${VERSION} to the dev environment" >> $GITHUB_STEP_SUMMARY
         env:
-          VERSION: ${{ github.event.inputs.version }} || 'latest' 
-
-  wait-for-approval:
-    needs: deploy-to-dev
-    runs-on: ubuntu-latest
-    environment: 
-      name: development
-      # The URL can point to your application or a relevant status page
-      url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-    steps:
-      - name: Manual approval step
-        run: |
-          echo "Deployment has been approved! Continuing with deployment process..."
-          echo "This step only runs after manual approval in the GitHub UI."
+          VERSION: ${{ github.event.inputs.version }} || 'latest'
           
   request-stage-approval:
     name: Request Stage Deployment Approval
-    needs: wait-for-approval
+    needs: deploy-to-dev
     runs-on: ubuntu-latest
     timeout-minutes: 0 # No timeout
     steps:
@@ -83,6 +70,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Ensure branch is uptp the date
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull origin main
+          
       - name: Install yq
         uses: mikefarah/yq@v4.35.1
 
@@ -132,7 +125,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
+        
+      - name: Ensure branch is uptp the date
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull origin main
+          
       - name: Install yq
         uses: mikefarah/yq@v4.35.1
 
