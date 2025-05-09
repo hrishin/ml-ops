@@ -138,10 +138,25 @@ make test
 ### Paackge and run container
 
 Before start deploying the model, one can run the model serving
-app as container by following command
+app as a container by following command
 
 ```bash
 make build-run
 ```
 
 ### Build and publish model
+
+Once ready to deploy the model, just create the tag using 
+https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml
+github action.
+
+This would allow user to either bump major, minor, patch or
+user can pass the custom tag.
+
+Essentially this automated workflow will tag the source 
+latest commit on the main brnahc, build and publish the 
+seving container image to the`docker.io/hrishi/ml-ops` 
+repository.
+
+At this moment this is how how the model version is maintained,
+which represent the same tag.
