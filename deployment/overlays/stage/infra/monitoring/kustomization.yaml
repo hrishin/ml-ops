@@ -4,8 +4,8 @@ namespace: monitoring
 resources:
   - ../../../../applications/namespace/v1/
   - ../../../../applications/kube-prometheus/v72.0.0-v2/
-patches:
-  - path: values.yaml
-    target:
-      kind: HelmRelease
-      name: prometheus-community
+# patches:
+#   - path: values.yaml
+#     target:
+#       kind: HelmRelease
+#       name: prometheus-community
