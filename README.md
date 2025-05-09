@@ -1,8 +1,9 @@
+
 # Iris Classifier MLOps Project
 
 An end-to-end MLOps implementation for the Iris flower classification model, 
-demonstrating MLOps workflow for model training, serving using local envrionment 
-and deploying the model through deployment pipeline.
+demonstrating the MLOps workflow for model training, serving using a local environment, 
+and deploying the model through a deployment pipeline.
 
 ## Project Overview
 
@@ -11,45 +12,42 @@ with a focus on MLOps practices.
 
 ![Alt text](docs/images/1-model-serving.png)
 
-
 ## Pre-requisites
 
-In order to run model training or deploy serving application locally,
-please ensure the follow setup in insalled on the host
+In order to run model training or deploy the serving application locally,
+please ensure the following setup is installed on the host:
 
-- python 3.12>=
-- docker or podman
-- make  
-- kubectl
-- helm
-- fluxcd
+- Python 3.12>=
+- Docker or Podman
+- Make  
+- Kubectl
+- Helm
+- FluxCD
 
-Before running any steps, plase ensure python virtual envionrment is initialized,
-some setup is executed on the host
+Before running any steps, please ensure the Python virtual environment is initialized,
+and the necessary setup is executed on the host:
 
 ```bash
 python -m venv venv && source venv/bin/activate
 make setup
 ```
 
+There are two main loops that developers or engineers would follow through the 
+model SDLC (ML Ops):
 
-There are main loop developers or engineers would be following through the 
-model SDLC(ML Ops)
-
- - Inner loop - Traing and test model locally, let iterate over model testing
- - Outer loop - Once model is ready to be deploy, developers would publish new 
- new model and deploy it through dev, staging and prod environment 
+- Inner loop - Train and test the model locally, iterate over model testing
+- Outer loop - Once the model is ready to be deployed, developers would publish the new 
+  model and deploy it through dev, staging, and prod environments 
 
 ## Inner Loop
 
 ### Run model training
 
-In order to run the model training, user could supply the sample
-data through `./data/iris.csv` file. However do sample data 
-provided system dump some sample data for common features 
-of [Iris flower data sets](https://en.wikipedia.org/wiki/Iris_flower_data_set)
+In order to run the model training, the user can supply the sample
+data through `./data/iris.csv` file. However, if no sample data is provided, the system will dump some sample data for common features 
+of the [Iris flower data set](https://en.wikipedia.org/wiki/Iris_flower_data_set).
 
-In order training model locally, execute
+To train the model locally, execute:
 
 ```bash
 make training
@@ -75,21 +73,22 @@ weighted avg       1.00      1.00      1.00        30
 2025-05-08 17:12:47,912 - __main__ - INFO - Saving model to artifacts/model_pipeline_1.0.20250508_171247.joblib
 2025-05-08 17:12:47,913 - __main__ - INFO - Model training completed. Version: 1.0.20250508_171247
 ```
-This training model store the training model under `artifacts` directory.
+This training model stores the trained model under the `artifacts` directory.
 
-### Running model locally to test the model
+### Running the model locally to test the model
 
-In order to run the model locally, please execute
+To run the model locally, execute:
 
 ```bash
 make run
 ```
-This run the model serving service which serves some endpoints to 
+
+This runs the model serving service which serves some endpoints to 
 test the model.
 
-In order to test the model, either navigate to 
+To test the model, either navigate to 
 http://0.0.0.0:8000/docs#/default/predict_api_v1_predict_post
-or run curl command, supply the sample input data
+or run a curl command to supply the sample input data:
 
 ```json
 //sample input for the test
@@ -103,9 +102,7 @@ or run curl command, supply the sample input data
 
 ```bash 
 curl -X POST http://0.0.0.0:8000/api/v1/predict \                                    
-  -H "Content-Type: application/json" \
-  -d '{ "sepal_length": 5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2 }' \
-| jq .
+  -H "Content-Type: application/json"   -d '{ "sepal_length": 5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2 }' | jq .
   
   
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -124,11 +121,11 @@ curl -X POST http://0.0.0.0:8000/api/v1/predict \
 }
 ```
 
-### Running the intgration tests
+### Running the integration tests
 
-In order to run automated integration tests on trained model, 
-please executethe following command on pretrained 
-model from the previous steps
+To run automated integration tests on the trained model, 
+please execute the following command on the pretrained 
+model from the previous steps:
 
 ```bash
 make test
@@ -136,97 +133,98 @@ make test
 
 ## Outer Loop
 
-### Paackge and run container
+### Package and run container
 
-Before start deploying the model, one can run the model serving
-app as a container by following command
+Before starting the deployment of the model, one can run the model serving
+app as a container by using the following command:
 
 ```bash
 make build-run
 ```
 
-Accesr the model serving appllication at http://0.0.0.0:9000/docs
+Access the model serving application at http://0.0.0.0:9000/docs
 
 ### Raise the Pull Request
 
-Raise a pull request(PR) against the `main` branch. Upon
-rasing the PR, automated workflow would run the model training
-and integration test workflow. 
-Publishes an image with PR build as suffix to the container tag.
+Raise a pull request (PR) against the `main` branch. Upon
+raising the PR, the automated workflow will run the model training
+and integration test workflow, and 
+publish an image with the PR build as a suffix to the container tag.
 
-### Build and publish model
+### Build and publish the model
 
-Once ready to deploy the model, just create the git tag using 
+Once the model is ready to deploy, just create the git tag using 
 https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml
-github action workflow.
+GitHub Action workflow.
 
-This would allow user to either bump major, minor, patch or
-user can pass the custom tag using [SEM VAR](https://semver.org/) 
+This will allow the user to either bump major, minor, patch, or
+pass a custom tag using [SEMVER](https://semver.org/) 
 schema.
 
-Essentially this automated workflow will tag the source 
-latest commit on the main branch, build and publish the 
-seving container image to the`docker.io/hrishi/ml-ops` 
-repository using https://github.com/hrishin/ml-ops/actions/workflows/build-helm.yaml
+This automated workflow will tag the latest commit on the main branch, build, and publish the 
+serving container image to the `docker.io/hrishi/ml-ops` 
+repository using the https://github.com/hrishin/ml-ops/actions/workflows/build-helm.yaml
 workflow.
 
-The model version is maintained using the the 
-same tagging version
+The model version is maintained using the same tagging version.
 
 ### Deploy model serving service
 
-To deploy the container image that is
-built using from the previous step,
+To deploy the container image that was
+built from the previous step,
 navigate to https://github.com/hrishin/ml-ops/actions/workflows/deploy-service.yml
-workflow, just pass the image tag.
+workflow and pass the image tag.
 
-Imaage tag is going to be the same as git 
-tag from the preivous steps.
+The image tag will be the same as the git 
+tag from the previous steps.
 
-One can look at https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml
-get the tag from the workflow summery.
+One can check https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml
+to get the tag from the workflow summary.
 
 The deploy workflow deploys the model serving application using 
-gitops workflow by allows promoting deployment from dev, staging and 
-prod environment.
+GitOps, allowing deployment promotion through dev, staging, and 
+prod environments.
 
-This deploy the application on Kubernetes cluster. Make sure respective 
-Kubernets clusters are configure to use the gitops workflow using the fluxcd
-by following one time setup described in #gitops-setup section.
+This will deploy the application on the Kubernetes cluster. Make sure the respective 
+Kubernetes clusters are configured to use the GitOps workflow using FluxCD
+by following the one-time setup described in the #gitops-setup section.
 
-## Gitops setup
+## GitOps setup
 
-In order to orchestrate the application deployment, dependent 
-infrastrucure, this demo uses fluxCD as one of the deployment tools.
+In order to orchestrate the application deployment and dependent 
+infrastructure, this demo uses FluxCD as one of the deployment tools.
 
-General idea of Gitops is to use git as a source of truth for deployment
-configuration let fluxcd kind of tools orchestrate the reoncillation
-to rallise the deployment configuration and make change into the deployment
-states of the system.
+The general idea of GitOps is to use git as a source of truth for deployment
+configuration, letting FluxCD or similar tools orchestrate the reconciliation
+to realize the deployment configuration and manage changes in the deployment
+state of the system.
 
-Use one of the command to initilize the gitops setup to respective kubernetes clusters
-In this instance following commands bootstrap flux with the this gitops repository
+Use one of the commands to initialize the GitOps setup for the respective Kubernetes clusters.
+In this case, the following commands bootstrap Flux with this GitOps repository
 for the `development` environment.
 
-Note: Before running the setup comamnd make sure you have installed the fluxcd CLI,
-get the github [PAT(Personal Account Token)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) 
-which has permission to read the github repo.
-Export the following environment variables
+Note: Before running the setup command, make sure you have installed the FluxCD CLI,
+and obtain the GitHub [PAT (Personal Access Token)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens), 
+which has permission to read the GitHub repo.
+Export the following environment variables:
 
 GITHUB_TOKEN=PAT,
 
 GITHUB_USER=your-github-username,
 
-GITHUB_REPO=your fork repo or this repo URL
+GITHUB_REPO=your-forked-repo-or-this-repo-URL
 
 ```bash
 flux bootstrap github \                                                 
-    --owner=${GITHUB_USER} \
-    --repository=${GITHUB_REPO} \
-    --branch=main \
-    --personal \
+    --owner=${GITHUB_USER}     
+    --repository=${GITHUB_REPO}     
+    --branch=main     
+    --personal     
     --path=deployment/clusters/dev
 ```
 
-Run the similar commands to `staging` and `production` clusters by change the argument
- `--path` to `deployment/clusters/stage`, `deployment/clusters/prod` respectively.
+Run the similar commands for the `staging` and `production` clusters by changing the `--path` argument to `deployment/clusters/stage` and `deployment/clusters/prod`, respectively.
+
+TODO:
+- Add FluxCD commands to sync the application and follow status.
+- Add Helm install to test the setup locally using the kind cluster.
