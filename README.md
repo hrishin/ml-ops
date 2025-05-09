@@ -275,9 +275,11 @@ kind delete cluster --name demo-cluster
 
 ## Publish the new helm chart version
 
-Application hosts the a [helm chart](./charts/iris-classifier) using the github pages. Ops engineer
+Application hosts the a [helm chart](./charts/iris-classifier) using the [github pages](https://hrishin.github.io/ml-ops/). Ops engineer
 or developer can build build and publish the new version of chart using
 https://github.com/hrishin/ml-ops/actions/workflows/build-helm.yaml workflow
+
+
 
 ## Operations
 
