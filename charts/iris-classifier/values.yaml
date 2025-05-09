@@ -3,7 +3,7 @@ replicaCount: 2
 
 image:
   repository: docker.io/hriships/iris-classifier-api
-  tag: v1.1.0
+  tag: v1.4.0
   pullPolicy: Always
 
 # Resource configuration
