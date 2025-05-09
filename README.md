@@ -260,7 +260,7 @@ To deploy application on local cluster(optional)
 ```
 
 
-In this case, a [helm chart](./chart/iris-classifier) for this application can be used to deploy the application by executing following commands.
+In this case, a [helm chart](./charts/iris-classifier) for this application can be used to deploy the application by executing following commands.
 
 ```bash
 make install 
