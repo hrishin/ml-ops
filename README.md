@@ -289,3 +289,7 @@ System deploys built-in grafana dashboard visualize the timeseries metrics which
 kubectl -n monitoring port-forward services/prometheus-grafana 9091:80
 # Access the Grafana using http://localhost:9091/ with initial username and password is `admin` && `admin` respectively
 ```
+
+## References
+
+- Model training code was referred through https://claude.ai
