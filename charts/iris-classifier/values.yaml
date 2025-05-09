@@ -26,6 +26,12 @@ route:
   port: 8080
   paths: 
   - /api/v1
+  # annotations: # allow API rate limiting 
+  #   nginx.ingress.kubernetes.io/limit-connections: "10"
+  #   nginx.ingress.kubernetes.io/limit-rpm: "60"
+  #   nginx.ingress.kubernetes.io/limit-rps: "10"
+  #   nginx.ingress.kubernetes.io/limit-burst-multiplier: "2"
+  #   nginx.ingress.kubernetes.io/limit-exempt: "1.2.3.4"  # Optional
 
 # Storage configuration
 # storage:

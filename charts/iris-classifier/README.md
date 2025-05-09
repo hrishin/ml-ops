@@ -33,6 +33,7 @@ The following table lists the configurable parameters of the chart and their def
 | `route.port`                | Service port exposed by the application               | `8080`                                   |
 | `route.host`                | Ingress host                                          | `iris.kube.two.inc`                      |
 | `route.paths`               | List of ingress paths                                 | `["/api/v1"]`                            |
+| `route.annotations`	      | Optional: Ingress annotations (e.g., rate limiting)	  |  nginx.ingress.kubernetes.io/limit-rpm: "60"|
 | `metrics.enabled`           | Enable Prometheus metrics endpoint                    | `true`                                   |
 | `metrics.path`              | Path for Prometheus to scrape metrics                 | `/metrics`                               |
 | `metrics.port`              | Port exposing metrics                                 | `8000`                                   |
