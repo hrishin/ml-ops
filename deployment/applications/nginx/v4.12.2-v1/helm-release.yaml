@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx
-        namespace: flux-system
+        namespace: ingress
   values:
     controller:
       replicaCount: 2
