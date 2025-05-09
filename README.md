@@ -10,7 +10,7 @@ and deploying the model through a deployment pipeline.
 This project implements a simple machine learning pipeline for Iris flower classification 
 with a focus on MLOps practices.
 
-![Alt text](docs/images/1-model-serving.png)
+![Model serving](docs/images/1-model-serving.png)
 
 ## Pre-requisites
 
@@ -265,4 +265,14 @@ Once done testing, tear down the cluster which was setup locally in the previous
 
 ```bash
 kind delete cluster --name demo-cluster
+```
+
+
+## Operations
+
+System deploys built-in grafana dashboard visualize the timeseries metrics which could help both SRE and developers to troubleshoot root cause of certain behavior. Users could access grafana dashboards via following commands
+
+```bash
+kubectl -n monitoring port-forward services/prometheus-grafana 9091:80
+# Access the Grafana using http://localhost:9091/ with initial username and password is `admin` && `admin` respectively
 ```
