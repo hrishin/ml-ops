@@ -2,7 +2,10 @@ name: Deploy helm chart artifcts
 
 on:
   push:
-    branches: ["gh-pages"]
+    branches:
+      - main
+    paths:
+      - 'gh-page/**'
 
   workflow_dispatch:
     inputs: {}
@@ -17,10 +20,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  deploy-helm-gh-page:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

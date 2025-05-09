@@ -6,9 +6,15 @@ on:
     - main
     tags:
       - '*'
+    paths-ignore:
+      - 'gh-pages/**'
+      - 'charts/**'
   pull_request:
     branches:
     - main
+    paths-ignore:
+      - 'gh-pages/**'
+      - 'charts/**'
   workflow_dispatch:
     inputs:
       container_tag:
@@ -162,7 +168,7 @@ jobs:
         password: ${{ secrets.CONTAINER_PASSWORD }}
 
     - name: Build model
-      run: make setup && make train
+      run: make setup && make train MODEL_VERSION=${{ github.event.inputs.container_tag }}
 
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v4

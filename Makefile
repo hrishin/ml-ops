@@ -9,6 +9,7 @@ DOCKER_REPO ?= hrishin
 KUBERNETES_NAMESPACE ?= ml-models
 RELEASE_NAME ?= iris-app
 NAMESPACE ?= iris-ns
+MODEL_VERSION ?= ""
 
 # Help
 help:
@@ -35,7 +36,7 @@ setup:
 # Train model
 train: setup
 	@echo "Training ML model..."
-	@poetry run python -m model.train
+	@poetry run python -m model.train --model-version=$(MODEL_VERSION)
 
 # Run locally
 run:

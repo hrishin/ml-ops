@@ -36,20 +36,6 @@ jobs:
           echo "chart_name=$(basename charts/*)" >> $GITHUB_OUTPUT
           echo "repo=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" >> $GITHUB_OUTPUT
 
-      - name: Ensure gh-pages branch exists
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          git fetch origin gh-pages || true
-          if git ls-remote --exit-code --heads origin gh-pages; then
-            git checkout gh-pages
-            git pull origin main
-          else
-            git checkout --orphan gh-pages
-            git pull origin main
-          fi
-
       - name: Package Helm chart
         run: |
           mkdir -p packaged
@@ -73,7 +59,7 @@ jobs:
           git config user.email "actions@github.com"
           git add .
           git commit -m "Publish chart version ${{ steps.version.outputs.version }}" || echo "No changes"
-          git push origin gh-pages
+          git push origin main
 
       - name: Trigger target workflow
         uses: actions/github-script@v6
@@ -83,6 +69,6 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'deploy-gh-page.yaml',
+              workflow_id: 'deploy-helm-charts.yaml',
               ref: 'gh-pages'
             })
