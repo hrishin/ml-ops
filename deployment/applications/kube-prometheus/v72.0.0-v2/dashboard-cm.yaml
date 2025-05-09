@@ -1391,5 +1391,5 @@ metadata:
   name: custom-dashboard
   namespace: monitoring
   labels:
-    grafana-dashboard: '1'
+    grafana_dashboard: '1'
 
