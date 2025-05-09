@@ -6,9 +6,13 @@ on:
     - main
     tags:
       - '*'
+    paths-ignore:
+      - 'gh-pages/**'
   pull_request:
     branches:
     - main
+    paths-ignore:
+      - 'gh-pages/**'
   workflow_dispatch:
     inputs:
       container_tag:
