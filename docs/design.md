@@ -48,13 +48,13 @@ easy to operate and govern comparatively other GitOPs tools like ArgoCD.
 For this service, following is the layout used to deployment
 ```bash
 .
-├── applications # holds all application manifests for both infra and application
+├── applications        # holds all application manifests for both infra and application
 │   ├── iris
 │   │   ├── v1.0.0+v1
 │   │   │   ├── kustomization.yaml
 │   │   │   ├── release.yaml
 │   │   │   └── repo.yaml
-│   │   └── v1.2.0+v1 # holds the common configuration for the application 
+│   │   └── v1.2.0+v1       # holds the common configuration for the application 
 │   │       ├── kustomization.yaml
 │   │       ├── release.yaml
 │   │       └── repo.yaml
@@ -78,9 +78,9 @@ For this service, following is the layout used to deployment
 │           ├── helm-release.yaml
 │           ├── kustomization.yaml
 │           └── repo.yaml
-├── clusters #this holds cluster specific deployment(entry point)
+├── clusters        #this holds cluster specific deployment(entry point)
 │   ├── dev
-│   │   ├── app.yaml #app has dependency on infra, infra has to be in place beforehand
+│   │   ├── app.yaml        #app has dependency on infra, infra has to be in place beforehand
 │   │   ├── infra.yaml
 │   │   └── kustomization.yaml
 │   ├── prod
@@ -91,7 +91,7 @@ For this service, following is the layout used to deployment
 │       ├── app.yaml
 │       ├── infra.yaml
 │       └── kustomization.yaml
-└── overlays #Use kustomization to configure environment specific options for each application
+└── overlays        #use kustomization to configure environment specific options for each application
     ├── dev
     │   ├── apps
     │   │   ├── kustomization.yaml
