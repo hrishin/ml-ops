@@ -236,11 +236,11 @@ GITHUB_REPO=your-forked-repo-or-this-repo-name
 
 ```bash
 flux bootstrap github \
-    --owner=${GITHUB_USER} \
-    --repository=${GITHUB_REPO} \ 
-    --branch=main \
-    --personal \
-    --path=deployment/clusters/dev
+  --owner=${GITHUB_USER} \
+  --repository=${GITHUB_REPO} \
+  --branch=main \
+  --personal \
+  --path=deployment/clusters/dev
 ```
 
 Run the similar commands for the `staging` and `production` clusters by changing the `--path` argument to `deployment/clusters/stage` and `deployment/clusters/prod`, respectively.
