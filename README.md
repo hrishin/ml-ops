@@ -273,6 +273,12 @@ kind delete cluster --name demo-cluster
 ```
 
 
+## Publish the new helm chart version
+
+Application hosts the a [helm chart](./charts/iris-classifier) using the github pages. Ops engineer
+or developer can build build and publish the new version of chart using
+https://github.com/hrishin/ml-ops/blob/main/.github/workflows/build-helm.yaml workflow
+
 ## Operations
 
 System deploys built-in grafana dashboard visualize the timeseries metrics which could help both SRE and developers to troubleshoot root cause of certain behavior. Users could access grafana dashboards via following commands

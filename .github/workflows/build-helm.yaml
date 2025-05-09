@@ -70,5 +70,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'deploy-helm-charts.yaml',
-              ref: 'gh-pages'
+              ref: 'main'
             })
