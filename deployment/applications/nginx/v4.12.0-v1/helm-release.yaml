@@ -22,6 +22,9 @@ spec:
       replicaCount: 2
       service:
         type: NodePort
+        nodePorts:
+          http: 30080
+          https: 30443
         externalTrafficPolicy: Local
       admissionWebhooks:
         enabled: false
