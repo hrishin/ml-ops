@@ -6,3 +6,4 @@ data
 .DS_Store
 .pytest_cache
 kind-config.yaml
+.vscode
