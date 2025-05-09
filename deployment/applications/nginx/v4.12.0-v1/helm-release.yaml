@@ -19,6 +19,8 @@ spec:
       retries: 3
   values:
     controller:
+      publishService:
+        enabled: false
       replicaCount: 1
       nodeSelector:
         ingress-ready: "true"
