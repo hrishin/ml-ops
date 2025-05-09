@@ -6,6 +6,7 @@ IMAGE_NAME = iris-classifier-api
 IMAGE_TAG ?= latest
 DOCKER_REGISTRY ?= docker.io
 KUBERNETES_NAMESPACE ?= ml-models
+MODEL_VERSION ?= ""
 
 # Help
 help:
@@ -32,7 +33,7 @@ setup:
 # Train model
 train: setup
 	@echo "Training ML model..."
-	@poetry run python -m model.train
+	@poetry run python -m model.train --model-version=$(MODEL_VERSION)
 
 # Run locally
 run: train

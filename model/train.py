@@ -7,6 +7,7 @@ This script loads data, preprocesses it, trains a model, and saves the pipeline.
 import logging
 import os
 from datetime import datetime
+import argparse
 
 import joblib
 import numpy as np
@@ -66,7 +67,7 @@ def build_pipeline():
     
     return pipeline
 
-def train_model():
+def train_model(version=""):
     """Train the model and save pipeline artifacts."""
     # Create artifacts directory
     create_artifacts_dir()
@@ -93,6 +94,10 @@ def train_model():
     # Create model metadata
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     model_version = f"{ModelConfig.VERSION_PREFIX}.{timestamp}"
+
+    if version:
+        model_version = version
+
     model_info = {
         "version": model_version,
         "accuracy": float(accuracy),
@@ -122,4 +127,7 @@ def train_model():
     return model_path, metadata_path, model_info
 
 if __name__ == "__main__":
-    train_model()
+    parser = argparse.ArgumentParser(description="Train a model with optional version.")
+    parser.add_argument("--model-version", type=str, help="Specify the model version", default=None)
+    args = parser.parse_args()
+    train_model(version=args.model_version)
