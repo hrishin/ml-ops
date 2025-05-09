@@ -17,13 +17,13 @@ with a focus on MLOps practices.
 In order to run model training or deploy the serving application locally,
 please ensure the following setup is installed on the host:
 
-- Python 3.12>=
+- Python 3.12 >=
 - Docker or Podman
 - Make  
-- Kubectl
-- Helm
-- FluxCD
-- Kind
+- Kubectl cli
+- Helm cli
+- Flux cli - v2.5.1 >=
+- Kind cli - v0.27.0 >=
 
 Before running any steps, please ensure the Python virtual environment is initialized,
 and the necessary setup is executed on the host:
