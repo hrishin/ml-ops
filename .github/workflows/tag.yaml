@@ -131,3 +131,9 @@ jobs:
                 container_tag: '${{ env.VERSION }}'
               }
             })
+
+      - name: Write summary
+        run: |
+          echo "### 🚀 Created a tag ${VERSION} and release https://github.com/hrishin/ml-ops/releases" >> $GITHUB_STEP_SUMMARY
+        env:
+          VERSION: ${{ env.VERSION }}

@@ -19,9 +19,10 @@ please ensure the follow setup in insalled on the host
 
 - python 3.12>=
 - docker or podman
-- make build 
-- Kubectl
- - Helm
+- make  
+- kubectl
+- helm
+- fluxcd
 
 Before running any steps, plase ensure python virtual envionrment is initialized,
 some setup is executed on the host
@@ -144,19 +145,88 @@ app as a container by following command
 make build-run
 ```
 
+Accesr the model serving appllication at http://0.0.0.0:9000/docs
+
+### Raise the Pull Request
+
+Raise a pull request(PR) against the `main` branch. Upon
+rasing the PR, automated workflow would run the model training
+and integration test workflow. 
+Publishes an image with PR build as suffix to the container tag.
+
 ### Build and publish model
 
-Once ready to deploy the model, just create the tag using 
+Once ready to deploy the model, just create the git tag using 
 https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml
-github action.
+github action workflow.
 
 This would allow user to either bump major, minor, patch or
-user can pass the custom tag.
+user can pass the custom tag using [SEM VAR](https://semver.org/) 
+schema.
 
 Essentially this automated workflow will tag the source 
-latest commit on the main brnahc, build and publish the 
+latest commit on the main branch, build and publish the 
 seving container image to the`docker.io/hrishi/ml-ops` 
-repository.
+repository using https://github.com/hrishin/ml-ops/actions/workflows/build-helm.yaml
+workflow.
 
-At this moment this is how how the model version is maintained,
-which represent the same tag.
+The model version is maintained using the the 
+same tagging version
+
+### Deploy model serving service
+
+To deploy the container image that is
+built using from the previous step,
+navigate to https://github.com/hrishin/ml-ops/actions/workflows/deploy-service.yml
+workflow, just pass the image tag.
+
+Imaage tag is going to be the same as git 
+tag from the preivous steps.
+
+One can look at https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml
+get the tag from the workflow summery.
+
+The deploy workflow deploys the model serving application using 
+gitops workflow by allows promoting deployment from dev, staging and 
+prod environment.
+
+This deploy the application on Kubernetes cluster. Make sure respective 
+Kubernets clusters are configure to use the gitops workflow using the fluxcd
+by following one time setup described in #gitops-setup section.
+
+## Gitops setup
+
+In order to orchestrate the application deployment, dependent 
+infrastrucure, this demo uses fluxCD as one of the deployment tools.
+
+General idea of Gitops is to use git as a source of truth for deployment
+configuration let fluxcd kind of tools orchestrate the reoncillation
+to rallise the deployment configuration and make change into the deployment
+states of the system.
+
+Use one of the command to initilize the gitops setup to respective kubernetes clusters
+In this instance following commands bootstrap flux with the this gitops repository
+for the `development` environment.
+
+Note: Before running the setup comamnd make sure you have installed the fluxcd CLI,
+get the github [PAT(Personal Account Token)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) 
+which has permission to read the github repo.
+Export the following environment variables
+
+GITHUB_TOKEN=PAT,
+
+GITHUB_USER=your-github-username,
+
+GITHUB_REPO=your fork repo or this repo URL
+
+```bash
+flux bootstrap github \                                                 
+    --owner=${GITHUB_USER} \
+    --repository=${GITHUB_REPO} \
+    --branch=main \
+    --personal \
+    --path=deployment/clusters/dev
+```
+
+Run the similar commands to `staging` and `production` clusters by change the argument
+ `--path` to `deployment/clusters/stage`, `deployment/clusters/prod` respectively.
