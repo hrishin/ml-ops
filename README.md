@@ -176,6 +176,8 @@ built from the previous step,
 navigate to https://github.com/hrishin/ml-ops/actions/workflows/deploy-service.yml
 workflow and pass the image tag.
 
+![Deploy Service](docs/images/3-deploy-service.png)
+
 The image tag will be the same as the git 
 tag from the previous steps.
 
