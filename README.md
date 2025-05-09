@@ -321,7 +321,12 @@ cluster, add following entires in the host file
 * Linux/Mac: edit `/etc/hosts`
 * Windows: edit `C:\Windows\System32\drivers\etc\hosts`
 
-Note: editing host files needs Super user or administrator access
+```
+Note: editing host files needs Super user or administrator access.
+Also make sure browser setting accessing accessing insecure application 
+using HTTP
+```
+
 
 
 
