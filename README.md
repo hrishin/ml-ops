@@ -23,6 +23,7 @@ please ensure the following setup is installed on the host:
 - Kubectl
 - Helm
 - FluxCD
+- Kind
 
 Before running any steps, please ensure the Python virtual environment is initialized,
 and the necessary setup is executed on the host:
