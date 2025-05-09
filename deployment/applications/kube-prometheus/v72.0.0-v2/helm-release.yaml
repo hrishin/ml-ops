@@ -13,7 +13,7 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: monitoring
-  interval: 10m
+  interval: 2m
   values:
     prometheus:
       prometheusSpec:
