@@ -18,3 +18,5 @@ spec:
       replicaCount: 2
       service:
         externalTrafficPolicy: Local
+      admissionWebhooks:
+        enabled: false
