@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: ingress
 resources:
   - ../../../../applications/namespace/v1/
-  - ../../../../applications/ingress/v4.12.2-v1/
+  - ../../../../applications/nginx/v4.12.2-v1/
 # patches:
 #   - path: values.yaml
 #     target:
