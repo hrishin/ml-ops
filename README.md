@@ -181,13 +181,23 @@ tag from the previous steps.
 One can check https://github.com/hrishin/ml-ops/actions/workflows/tag.yaml
 to get the tag from the workflow summary.
 
-The deploy workflow deploys the model serving application using 
+The deploy workflow deploys the model serving application using
 GitOps, allowing deployment promotion through dev, staging, and 
 prod environments.
 
 This will deploy the application on the Kubernetes cluster. Make sure the respective 
 Kubernetes clusters are configured to use the GitOps workflow using FluxCD
-by following the one-time setup described in the #gitops-setup section.
+by following the one-time setup described in the [GitOps setup](#gitops-setup) section.
+
+Deployment flow is based on enventual consistent, run the following flux command to sync
+the changes upfront
+
+`Note: make sure kubectl is configured to use the corrent cluster from dev, statge and prod`
+
+```bash
+flux reconcile source git flux-system
+flux get all -n ml-ops #to follow the status
+```
 
 ## GitOps setup
 
@@ -212,14 +222,14 @@ GITHUB_TOKEN=PAT,
 
 GITHUB_USER=your-github-username,
 
-GITHUB_REPO=your-forked-repo-or-this-repo-URL
+GITHUB_REPO=your-forked-repo-or-this-repo-name
 
 ```bash
-flux bootstrap github \                                                 
-    --owner=${GITHUB_USER}     
-    --repository=${GITHUB_REPO}     
-    --branch=main     
-    --personal     
+flux bootstrap github \
+    --owner=${GITHUB_USER} \
+    --repository=${GITHUB_REPO} \ 
+    --branch=main \
+    --personal \
     --path=deployment/clusters/dev
 ```
 
