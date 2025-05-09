@@ -27,7 +27,7 @@ This allows use git to version control the releases, make release notes and buil
 As of now model is trained through the the github action workflow pipeline, however same pipeline could be enhanced to build and deploy model
 to extenal model repository.
 
-## Deployment through helm and gitops
+## Deployment through helm and GitOPs
 
 A helm chart is used to package the application manifests and to expose the certain configuration for the user configure the application.
 This chart for this application is designed in very opinionated way so 
@@ -43,7 +43,7 @@ Current implementation use the FluxCD to deploy both iris classifier model
 service and some dependent infra. such as nginx-ingress, prometheus,
 grafana.
 FluxCD allows modeling gitiops workflow and gives effect pattern quite conveniently using helm and kustomization configurations in order to deploy both infra. components and services. FluxCD is 
-easy to operate and govern comparatively other gitops tools like ArgoCD.
+easy to operate and govern comparatively other GitOPs tools like ArgoCD.
 
 For this service, following is the layout used to deployment
 ```bash
@@ -150,7 +150,7 @@ As of now application, helm chart, deployment configurations all lives in one re
 For deploying clusters, infra components, charts definitions could still be
 hosted into the monorepo.
 Mono repository usually reduced the overhead over managing multiple repository. It also facilitate building common operations conveniently.
-On the trade it raise some challenges with administration and logistics such as networking payload during the cloning, or encountering merge conflicts during the common gitops operations etc.
+On the trade it raise some challenges with administration and logistics such as networking payload during the cloning, or encountering merge conflicts during the common GitOPs operations etc.
 
 However application specific deployment and build workflows could live into its own git repository.
 
