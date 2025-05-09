@@ -220,9 +220,12 @@ Use one of the commands to initialize the GitOps setup for the respective Kubern
 In this case, the following commands bootstrap Flux with this GitOps repository
 for the `development` environment.
 
+```
 Note: Before running the setup command, make sure you have installed the FluxCD CLI,
 and obtain the GitHub [PAT (Personal Access Token)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens), 
-which has permission to read the GitHub repo.
+which has permission to read/write from/to the GitHub repo.
+```
+
 Export the following environment variables:
 
 GITHUB_TOKEN=PAT,
