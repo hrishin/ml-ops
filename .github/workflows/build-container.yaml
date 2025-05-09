@@ -8,11 +8,13 @@ on:
       - '*'
     paths-ignore:
       - 'gh-pages/**'
+      - 'charts/**'
   pull_request:
     branches:
     - main
     paths-ignore:
       - 'gh-pages/**'
+      - 'charts/**'
   workflow_dispatch:
     inputs:
       container_tag:
