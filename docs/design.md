@@ -209,9 +209,10 @@ which could be leveraged autoscale serving using HPA or Keda kind of services.
 
 ### Improve overall services accessability
 
-As of some of services not really configured well to access it through the well formed URL or through the ingress URL.
-One of the important enhancement provided well formed URL to access these services.
+At present some of services not really configured well to access it through the well formed URL or through the ingress URL.
+One of the important enhancement is to provide a well formed URL to access these services.
 
 ### Security
 
 Some of the infa. services(grafana) needs right way of initializing the credentials. In the real scenarios, all such credentials would be either secured in the git configuration or would be stored in secure secrete value services.
+Most important, service access needs to be protected through TLS certificate.
