@@ -166,19 +166,19 @@ result of more than one model
 - A/B testing model and based on accuracy promoting the model with higher
 weight 
 - If model size grows large, demands its own way building and deploying the 
-mode service then distinct model service would allow packing and rolling out the
+model service then distinct model service would allow packaging and rolling out the
 models more effectively
 - Scaling of model serving 
 
-On the trade-off side having such design gong to add some degree of operation
+On the trade-off side having such design going to add some degree of operation
 overheads from software SDLC, deployment and readability aspects
 
 One of the proposed solutions for such a case is to use [
 Seldon MLServer](https://www.seldon.io/solutions/seldon-mlserver/), which allows 
 running multiple models, supports Scikit-Learn, 
-exposes model metrics/Grafana dashboards, and integrates well with 
-[Seldon Core](https://github.com/SeldonIO/seldon-core/), providing a Kubernetes-native 
-way of deploying models via an external model repository.
+exposes model metrics/Grafana dashboards, and integrates well using 
+[Seldon Core](https://github.com/SeldonIO/seldon-core/) with Kubernetes by providing a Kubernetes-native 
+way of deploying models via an external model repository and CRDs.
 
 ![Model serving](./images/2-model-serving-v2.png)
 
@@ -193,9 +193,9 @@ application that could enhance the end user experience.
 
 ### Add Kubernetes provisioning scripts for GKE/EKS
 
-As of system assumes the deployable clusters are provisioned through
+As of now system assumes the deployable clusters are provisioned through
 SRE/Platform engineering team. 
-May system can give a way to provision the cluster with the essential infrastructure
+Maybe system can give a way to provision the cluster with the essential infrastructure
 from Kubernetes clusters, Core networking, computer and storage resources.
 
 ### API service enhancement
