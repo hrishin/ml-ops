@@ -173,12 +173,6 @@ models more effectively
 On the trade-off side having such design going to add some degree of operation
 overheads from software SDLC, deployment and readability aspects
 
-One of the proposed solutions for such a case is to use [
-Seldon MLServer](https://www.seldon.io/solutions/seldon-mlserver/), which allows 
-running multiple models, supports Scikit-Learn, 
-exposes model metrics/Grafana dashboards, and integrates well using 
-[Seldon Core](https://github.com/SeldonIO/seldon-core/) with Kubernetes by providing a Kubernetes-native 
-way of deploying models via an external model repository and CRDs.
 
 ![Model serving](./images/2-model-serving-v2.png)
 
